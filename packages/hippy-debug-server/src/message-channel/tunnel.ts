@@ -18,11 +18,10 @@ export function createTunnelClient() {
 
 export function onMessage(msg) {
   try {
-    const moduleObject: any = JSON.parse(msg).modules[0];
-    const message: string = moduleObject.content;
-    console.warn('on tunnel message', moduleObject.module, listeners.has(moduleObject.module))
-    if (listeners.has(moduleObject.module)) {
-      listeners.get(moduleObject.module).forEach((cb) => {
+    const message = JSON.parse(msg);
+    console.warn('on tunnel message', message.method, exports.listeners.has(message.method));
+    if (exports.listeners.has(message.method)) {
+      exports.listeners.get(message.method).forEach((cb) => {
         cb(message);
       });
     }
@@ -38,9 +37,7 @@ export function sendMessage(msg: Tunnel.Req): void {
     return;
   }
   console.info('sendMessage', msg);
-  global.addon.sendMsg(
-    JSON.stringify(msg),
-  );
+  global.addon.sendMsg(JSON.stringify(msg));
 }
 
 export function registerModuleCallback(module: string, callback: any): void {
