@@ -3,6 +3,7 @@
  */
 
 import { Tunnel } from '../@types/tunnel';
+import { EventEmitter } from 'events';
 
 export const listeners = new Map();
 let isTunnelReady = true;
@@ -16,14 +17,17 @@ export function createTunnelClient() {
   }
 }
 
+export const emitter = new EventEmitter();
 export function onMessage(msg) {
   try {
-    const message = JSON.parse(msg);
-    console.warn('on tunnel message', message.method, exports.listeners.has(message.method));
-    if (exports.listeners.has(message.method)) {
-      exports.listeners.get(message.method).forEach((cb) => {
-        cb(message);
+    const msgObject = JSON.parse(msg);
+    console.warn('on tunnel message', msgObject.method, listeners.has(msgObject.method));
+    if (listeners.has(msgObject.method)) {
+      listeners.get(msgObject.method).forEach((cb) => {
+        cb(msg);
       });
+    } else {
+      emitter.emit('message', msg);
     }
   } catch (e) {
     console.error(`parse tunnel response json failed. ${e} \n${JSON.stringify(msg)}`);
