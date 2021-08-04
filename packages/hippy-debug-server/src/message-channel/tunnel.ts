@@ -27,7 +27,7 @@ export function onMessage(msg) {
         cb(msg);
       });
     } else {
-      emitter.emit('message', msg);
+      emitter.emit('message', msgObject);
     }
   } catch (e) {
     console.error(`parse tunnel response json failed. ${e} \n${JSON.stringify(msg)}`);
