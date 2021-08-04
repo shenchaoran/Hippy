@@ -14,11 +14,13 @@ declare namespace Adapter {
 
     interface CommandRes {
       id: number;
+      method?: string;
       result: any;
     }
 
     interface ErrorRes {
       id: number;
+      method?: string;
       error: {
         code: number;
         message: string;
