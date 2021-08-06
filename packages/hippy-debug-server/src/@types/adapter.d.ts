@@ -1,5 +1,5 @@
 declare namespace Adapter {
-  type DomainCallback = (error: Adapter.CDP.ErrorRes.error, msg: Adapter.CDP.Res) => void;
+  type DomainCallback = (msg: Adapter.CDP.Res) => void;
   declare namespace CDP {
     interface Req {
       id: number;
