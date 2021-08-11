@@ -25,9 +25,11 @@ export class TunnelAppClient extends AppClient {
 
   resume() {
     debug('tunnel app client resume');
+    sendMessage('chrome_socket_closed');
     sendMessage({
-      module: 'jsDebugger',
-      content: 'chrome_socket_closed',
+      id: Date.now(),
+      medthod: 'Debugger.disable',
+      params: {},
     } as any);
   }
 }

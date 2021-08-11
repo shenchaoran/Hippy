@@ -22,10 +22,11 @@ export const emitter = new EventEmitter();
 export function onMessage(msg) {
   try {
     const msgObject = JSON.parse(msg);
-    const method = msgIdMethodMap.get(msgObject.id);
-    msgObject.method = method;
-    msgIdMethodMap.delete(msgObject.id);
-
+    if (!msgObject.method) {
+      const method = msgIdMethodMap.get(msgObject.id);
+      msgObject.method = method;
+      msgIdMethodMap.delete(msgObject.id);
+    }
     console.warn('on tunnel message', msgObject.method, listeners.has(msgObject.method));
     if (listeners.has(msgObject.method)) {
       listeners.get(msgObject.method).forEach((cb) => {
