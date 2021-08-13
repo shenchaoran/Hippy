@@ -1,14 +1,16 @@
-import { DeviceInfo } from './@types/tunnel';
-import { DeviceStatus, DeviceManagerEvent } from './@types/enum';
-import { EventEmitter } from 'events';
 import createDebug from 'debug';
+import { EventEmitter } from 'events';
+import { DeviceManagerEvent, DevicePlatform, DeviceStatus } from './@types/enum';
+import { DeviceInfo } from './@types/tunnel';
+import { androidDebugTargetManager } from './android-debug-target-manager';
 
 const debug = createDebug('device-manager');
+createDebug.enable('device-manager');
 
 class DeviceManager extends EventEmitter {
   deviceList: DeviceInfo[] = [];
-  selectedIndex: number = -1;
-  appConnect: boolean = false;
+  selectedIndex = -1;
+  appConnect = false;
 
   addDevice(device: DeviceInfo) {
     if (!this.deviceList.find((item) => item.deviceid === device.deviceid)) {
@@ -42,6 +44,8 @@ class DeviceManager extends EventEmitter {
       for (const device of devices) {
         if (device.physicalstatus === DeviceStatus.Disconnected) {
           device.devicename = `${device.devicename}(已断开)`;
+        } else if (device.platform === DevicePlatform.Android) {
+          androidDebugTargetManager.addCustomTarget(device.deviceid);
         }
       }
 

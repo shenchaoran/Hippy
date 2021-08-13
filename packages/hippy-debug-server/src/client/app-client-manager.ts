@@ -1,3 +1,4 @@
+import { androidDebugTargetManager } from '../android-debug-target-manager';
 import { androidMiddleWareManager, iosMiddleWareManager } from '../middlewares';
 import { AppClient, AppClientOption } from './app-client';
 import { IwdpAppClient } from './iwdp-app-client';
@@ -98,6 +99,7 @@ export const initVoltronEnv = () => {
  *    - jsc实现的协议走 iwdp 通道
  */
 export const initTdfEnv = () => {
+  androidDebugTargetManager.useCustom = true;
   console.log('initTdfEnv');
   appClientManager.reset();
   appClientManager.addAndroidAppClientOption({
