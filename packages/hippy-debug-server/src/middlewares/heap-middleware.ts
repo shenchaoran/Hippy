@@ -25,7 +25,8 @@ export const onFetchHeapCache: MiddleWare = async (ctx, next) => {
     const cacheMsgStr = await fs.promises.readFile(fpath, 'utf8');
     const cacheMsg: Adapter.CDP.CommandRes = JSON.parse(cacheMsgStr);
     ctx.sendToDevtools({
-      ...ctx.msg,
+      id: ctx.msg.id,
+      method: ctx.msg.method,
       result: cacheMsg.result,
     });
   } catch (e) {
