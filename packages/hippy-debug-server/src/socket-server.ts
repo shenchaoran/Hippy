@@ -158,6 +158,11 @@ export class SocketServer extends DomainRegister {
       ws.close();
       return debug('invalid client role!');
     }
+    if (!clientId) {
+      ws.close();
+      return debug('invalid ws connection!');
+    }
+    ws.clientId = clientId;
 
     if (clientRole === ClientRole.Devtools) {
       this.selectDebugTarget(debugTarget, ws);
@@ -173,6 +178,15 @@ export class SocketServer extends DomainRegister {
           appWs: ws,
         });
       }
+      ws.removeAllListeners('close');
+      ws.on('close', () => {
+        for (const [clientId, { appWs }] of this.connectionMap.entries()) {
+          if (appWs === ws) {
+            this.connectionMap.delete(clientId);
+          }
+        }
+        androidDebugTargetManager.removeWsTarget(ws.clientId);
+      });
     }
   }
 }
