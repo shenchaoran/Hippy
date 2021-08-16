@@ -52,8 +52,8 @@ export class Application {
 
       Application.server = app.listen(port, host, () => {
         debug('start koa dev server');
-        if (useTunnel) startTunnel({ iwdpPort, iwdpStartPort, iwdpEndPort });
-        else if (startIWDP) startIosProxy({ iwdpPort, iwdpStartPort, iwdpEndPort });
+        if (useTunnel) startTunnel(argv);
+        else if (startIWDP) startIosProxy(argv);
         if (startAdb) startAdbProxy(port);
 
         Application.socketServer = new SocketServer(Application.server, argv);

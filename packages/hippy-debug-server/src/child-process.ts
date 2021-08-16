@@ -12,15 +12,17 @@ const debug = createDebug('child-process');
 createDebug.enable('child-process');
 let proxyProcess;
 
-type TunnelParams = { iwdpPort: number; iwdpStartPort: number; iwdpEndPort: number };
-
-export const startTunnel = ({ iwdpPort, iwdpStartPort, iwdpEndPort }: TunnelParams) => {
+export const startTunnel = ({ port, iwdpPort, iwdpStartPort, iwdpEndPort }) => {
   addon.addEventListener((event, data) => {
     debug(`receive tunnel event: ${event}`);
     if (event === TunnelEvent.ReceiveData) {
       tunnel.onMessage(data);
     } else if ([TunnelEvent.RemoveDevice, TunnelEvent.AddDevice].indexOf(event) !== -1) {
       deviceManager.getDeviceList();
+      if (event === TunnelEvent.AddDevice) {
+        // 每次设备连接后，运行 adb reverse
+        startAdbProxy(port);
+      }
     }
   });
 
@@ -29,7 +31,7 @@ export const startTunnel = ({ iwdpPort, iwdpStartPort, iwdpEndPort }: TunnelPara
   addon.tunnelStart(adbPath, iwdpParams, iwdpPort);
 };
 
-export const startIosProxy = ({ iwdpPort, iwdpStartPort, iwdpEndPort }: TunnelParams) => {
+export const startIosProxy = ({ iwdpPort, iwdpStartPort, iwdpEndPort }) => {
   proxyProcess = spawn(
     'ios_webkit_debug_proxy',
     ['--no-frontend', `--config=null:${iwdpPort},:${iwdpStartPort}-${iwdpEndPort}`],
