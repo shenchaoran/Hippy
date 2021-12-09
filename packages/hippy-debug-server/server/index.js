@@ -29,6 +29,7 @@ const {
 } = require('../utils');
 const devSupportWsServer = require('./websocketProxy');
 const liveReloadWsServer = require('./hippy-livereload');
+const { startWebpackDevServer } = require('./webpack');
 
 async function startDevServer(args) {
   const {
@@ -39,7 +40,9 @@ async function startDevServer(args) {
     livePort = 38999,
     verbose,
     live,
+    config,
   } = args;
+  const { webpackConfig, hmrPort } = getWebpackConfig(config);
   const versionReturn = '{"Browser": "Hippy/v1.0.0","Protocol-Version": "1.1"}';
   const jsonReturn = JSON.stringify([{
     description: 'hippy instance',
@@ -100,6 +103,7 @@ async function startDevServer(args) {
     .then(() => {
       exec('adb', ['reverse', `tcp:${port}`, `tcp:${port}`]);
       exec('adb', ['reverse', `tcp:${livePort}`, `tcp:${livePort}`]);
+      if (hmrPort) exec('adb', ['reverse', `tcp:${hmrPort}`, `tcp:${hmrPort}`]);
     })
     .catch((err) => {
       logger.warn('Port reverse failed, For iOS app debug only just ignore the message.');
@@ -112,8 +116,12 @@ async function startDevServer(args) {
       const serverDebugInstance = app.listen(port, host, () => {
         devSupportWsServer.startWebsocketProxyServer(serverDebugInstance, '/debugger-proxy');
         logger.info('Hippy debug server is started at', `${host}:${port}`, 'for entry', entry);
+        logger.info('HMR server is started at', `${host}:${hmrPort}`);
         logger.info('Please open "chrome://inspect" in Chrome to debug your android Hippy app, or use Safari to debug iOS app');
+
+        if (webpackConfig) startWebpackDevServer(webpackConfig);
       });
+
       serverDebugInstance.timeout = 6000 * 1000;
       if (!live) return;
       const serverLiveReloadInstance = app.listen(livePort, host, () => {
@@ -122,6 +130,17 @@ async function startDevServer(args) {
       });
       serverLiveReloadInstance.timeout = 6000 * 1000;
     });
+}
+
+function getWebpackConfig(configPath) {
+  let hmrPort;
+  let webpackConfig;
+  const webpackConfigPath = path.resolve(process.cwd(), configPath);
+  if (configPath && fs.existsSync(webpackConfigPath)) {
+    webpackConfig = require(webpackConfigPath);
+    hmrPort = (webpackConfig.devServer && webpackConfig.devServer.port) || 38988;
+  }
+  return { webpackConfig, hmrPort };
 }
 
 module.exports = startDevServer;

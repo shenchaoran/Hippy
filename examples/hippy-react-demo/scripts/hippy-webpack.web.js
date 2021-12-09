@@ -3,13 +3,19 @@ const path = require('path');
 const webpack = require('webpack');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 const CaseSensitivePathsPlugin = require('case-sensitive-paths-webpack-plugin');
+const ReactRefreshWebpackPlugin = require('@pmmmwh/react-refresh-webpack-plugin');
 const pkg = require('../package.json');
 
+const isDevelopment = process.env.NODE_ENV !== 'production';
 const platform = 'web';
 
 module.exports = {
-  mode: 'production',
+  mode: 'development',
+  devtool: 'source-map',
   bail: true,
+  devServer: {
+    hot: true,
+  },
   entry: {
     index: ['regenerator-runtime', path.resolve(pkg.main)],
   },
@@ -20,7 +26,7 @@ module.exports = {
   plugins: [
     new webpack.NamedModulesPlugin(),
     new webpack.DefinePlugin({
-      'process.env.NODE_ENV': JSON.stringify('production'),
+      'process.env.NODE_ENV': JSON.stringify(isDevelopment ? 'development' : 'production'),
       __PLATFORM__: JSON.stringify(platform),
     }),
     new HtmlWebpackPlugin({
@@ -30,7 +36,8 @@ module.exports = {
       favouriteIcon: pkg.favicon || 'https://res.imtt.qq.com/hippydoc/img/hippy-logo.ico',
     }),
     new CaseSensitivePathsPlugin(),
-  ],
+    isDevelopment && new ReactRefreshWebpackPlugin(),
+  ].filter(Boolean),
   module: {
     rules: [
       {
@@ -39,6 +46,7 @@ module.exports = {
           {
             loader: 'babel-loader',
             options: {
+              compact: false,
               sourceType: 'unambiguous',
               presets: [
                 '@babel/preset-react',
@@ -56,7 +64,8 @@ module.exports = {
                 ['@babel/plugin-proposal-class-properties'],
                 ['@babel/plugin-proposal-decorators', { legacy: true }],
                 ['@babel/plugin-transform-runtime', { regenerator: true }],
-              ],
+                isDevelopment && require.resolve('react-refresh/babel'),
+              ].filter(Boolean),
             },
           },
         ],

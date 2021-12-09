@@ -7,6 +7,7 @@ const { argv } = yargs
   .alias('v', 'version')
   .describe('v', 'show version information')
   .alias('h', 'help')
+  .alias('c', 'config')
   .help()
   .version()
   .option('entry', {
@@ -20,7 +21,7 @@ const { argv } = yargs
   })
   .option('host', {
     type: 'string',
-    default: 'localhost',
+    default: '0.0.0.0',
     describe: 'The host the debug server will listen to',
   })
   .option('port', {
@@ -42,6 +43,11 @@ const { argv } = yargs
     type: 'boolean',
     default: false,
     describe: 'live reload enable',
+  })
+  .option('config', {
+    type: 'string',
+    default: '',
+    describe: 'webpack config file',
   })
   .epilog(`Copyright (C) 2017-${new Date().getFullYear()} THL A29 Limited, a Tencent company.`);
 

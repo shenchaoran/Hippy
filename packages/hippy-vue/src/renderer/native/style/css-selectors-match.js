@@ -69,6 +69,11 @@ class SelectorsMap {
     appendRules.forEach(rule => rule.lookupSort(this));
   }
 
+  delete(hash) {
+    const removedRuleSets = this.ruleSets.filter(rule => rule.hash === hash);
+    removedRuleSets.forEach(rule => rule.removeSort(this));
+  }
+
   query(node) {
     const { tagName, id, classList } = node;
     const selectorClasses = [
@@ -105,8 +110,27 @@ class SelectorsMap {
     this.addToMap(this.type, cssType, sel);
   }
 
+  removeById(id, sel) {
+    this.removeFromMap(this.id, id, sel);
+  }
+
+  removeByClass(cssClass, sel) {
+    this.removeFromMap(this.class, cssClass, sel);
+  }
+
+  removeByType(cssType, sel) {
+    this.removeFromMap(this.type, cssType, sel);
+  }
+
   sortAsUniversal(sel) {
     this.universal.push(this.makeDocSelector(sel));
+  }
+
+  removeAsUniversal(sel) {
+    const index = this.universal.findIndex(item => item.sel.ruleSet.hash === sel.ruleSet.hash);
+    if (index !== -1) {
+      this.universal.splice(index);
+    }
   }
 
   addToMap(map, head, sel) {
@@ -116,6 +140,14 @@ class SelectorsMap {
       list.push(this.makeDocSelector(sel));
     } else {
       map[head] = [this.makeDocSelector(sel)];
+    }
+  }
+
+  removeFromMap(map, head, sel) {
+    const list = map[head];
+    const index = list.findIndex(item => item.sel.ruleSet.hash === sel.ruleSet.hash);
+    if (index !== -1) {
+      list.splice(index, 1);
     }
   }
 

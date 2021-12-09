@@ -1,8 +1,8 @@
 const fs = require('fs');
 const path = require('path');
 const webpack = require('webpack');
-const VueLoaderPlugin = require('vue-loader/lib/plugin');
 const HippyDynamicImportPlugin = require('@hippy/hippy-dynamic-import-plugin');
+const HippyHMRPlugin = require('@hippy/hippy-hmr-plugin');
 const pkg = require('../package.json');
 
 let cssLoader = '@hippy/vue-css-loader';
@@ -16,21 +16,44 @@ if (fs.existsSync(hippyVueCssLoaderPath)) {
   console.warn('* Using the @hippy/vue-css-loader defined in package.json');
 }
 
+let vueLoader = '@hippy/vue-loader';
+let VueLoaderPlugin;
+const hippyVueLoaderPath = path.resolve(__dirname, '../../../packages/hippy-vue-loader/lib');
+if (fs.existsSync(hippyVueLoaderPath)) {
+  /* eslint-disable-next-line no-console */
+  console.warn(`* Using the @hippy/vue-loader in ${hippyVueLoaderPath}`);
+  vueLoader = hippyVueLoaderPath;
+  VueLoaderPlugin = require(path.resolve(__dirname, '../../../packages/hippy-vue-loader/lib/plugin'));
+} else {
+  /* eslint-disable-next-line no-console */
+  console.warn('* Using the @hippy/vue-loader defined in package.json');
+  VueLoaderPlugin = require('@hippy/vue-loader/lib/plugin');
+}
+
+
 module.exports = {
   mode: 'development',
-  devtool: 'eval-source-map',
+  devtool: 'source-map',
   watch: true,
   watchOptions: {
     aggregateTimeout: 1500,
   },
+  devServer: {
+    port: 38988,
+    hot: true,
+    devMiddleware: {
+      writeToDisk: true,
+    },
+  },
   entry: {
-    index: [path.resolve(pkg.nativeMain), '@hippy/hippy-live-reload-polyfill'],
+    index: [path.resolve(pkg.nativeMain)],
   },
   output: {
     filename: 'index.bundle',
     // chunkFilename: '[name].[chunkhash].js',
     strictModuleExceptionHandling: true,
     path: path.resolve('./dist/dev/'),
+    publicPath: 'http://localhost:38989/',
     globalObject: '(0, eval)("this")',
     // CDN path can be configured to load children bundles from remote server
     // publicPath: 'https://static.res.qq.com/hippy/hippyVueDemo/',
@@ -56,13 +79,14 @@ module.exports = {
     //   test: /\.(js|jsbundle|css|bundle)($|\?)/i,
     //   filename: '[file].map',
     // }),
+    new HippyHMRPlugin(),
   ],
   module: {
     rules: [
       {
         test: /\.vue$/,
         use: [
-          'vue-loader',
+          vueLoader,
           'scope-loader',
         ],
       },
