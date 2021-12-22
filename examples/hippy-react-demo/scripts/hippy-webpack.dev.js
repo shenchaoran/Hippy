@@ -29,7 +29,6 @@ module.exports = {
   output: {
     filename: 'index.bundle',
     strictModuleExceptionHandling: true,
-    publicPath: 'http://localhost:38989/',
     path: path.resolve('./dist/dev/'),
     globalObject: '(0, eval)("this")',
     // CDN path can be configured to load children bundles from remote server
@@ -50,7 +49,10 @@ module.exports = {
     //   test: /\.(js|jsbundle|css|bundle)($|\?)/i,
     //   filename: '[file].map',
     // }),
-    new HippyHMRPlugin(),
+    // HMR manifest.json will fetch from this path
+    new HippyHMRPlugin({
+      hotManifestPublicPath: 'http://localhost:38989/',
+    }),
     new ReactRefreshWebpackPlugin({
       overlay: false,
     }),

@@ -33,7 +33,7 @@ if (fs.existsSync(hippyVueLoaderPath)) {
 
 module.exports = {
   mode: 'development',
-  devtool: 'source-map',
+  devtool: 'eval-source-map',
   watch: true,
   watchOptions: {
     aggregateTimeout: 1500,
@@ -53,7 +53,6 @@ module.exports = {
     // chunkFilename: '[name].[chunkhash].js',
     strictModuleExceptionHandling: true,
     path: path.resolve('./dist/dev/'),
-    publicPath: 'http://localhost:38989/',
     globalObject: '(0, eval)("this")',
     // CDN path can be configured to load children bundles from remote server
     // publicPath: 'https://static.res.qq.com/hippy/hippyVueDemo/',
@@ -79,7 +78,10 @@ module.exports = {
     //   test: /\.(js|jsbundle|css|bundle)($|\?)/i,
     //   filename: '[file].map',
     // }),
-    new HippyHMRPlugin(),
+    // HMR manifest.json will fetch from this path
+    new HippyHMRPlugin({
+      hotManifestPublicPath: 'http://localhost:38989/',
+    }),
   ],
   module: {
     rules: [

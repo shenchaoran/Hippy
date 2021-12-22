@@ -39,10 +39,14 @@ async function startDevServer(args) {
     port = 38989,
     livePort = 38999,
     verbose,
-    live,
     config,
   } = args;
+  let { live } = args;
   const { webpackConfig, hmrPort } = getWebpackConfig(config);
+  if (webpackConfig) {
+    live = false;
+    logger.warn('HMR and live option could not enable simultaneously, the live option is ignored!\nHMR will use live reload as a fallback strategy when failed.');
+  }
   const versionReturn = '{"Browser": "Hippy/v1.0.0","Protocol-Version": "1.1"}';
   const jsonReturn = JSON.stringify([{
     description: 'hippy instance',

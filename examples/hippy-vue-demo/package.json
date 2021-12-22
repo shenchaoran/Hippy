@@ -39,7 +39,7 @@
     "@babel/preset-env": "^7.12.0",
     "@hippy/debug-server": "^2.1.2",
     "@hippy/hippy-dynamic-import-plugin": "^2.0.0",
-    "@hippy/hippy-hmr-plugin": "^0.0.1",
+    "@hippy/hippy-hmr-plugin": "^0.0.2",
     "@hippy/hippy-live-reload-polyfill": "^1.0.4",
     "@hippy/vue-css-loader": "^2.0.1",
     "@hippy/vue-loader": "^0.0.1-alpha.2",
