@@ -1,89 +1,89 @@
 [
   {
-    "hash": "chunk-1",
+    "hash": "chunk-2",
     "selectors": [],
     "declarations": []
   },
   {
-    "hash": "chunk-1",
+    "hash": "chunk-2",
     "selectors":[
       "*"
     ],
     "declarations":[
       {
         "type":"declaration",
-        "property":"UniversalSelector",
-        "value":"UniversalSelector"
+        "property":"UniversalSelector-chunk-2",
+        "value":"UniversalSelector-chunk-2"
       }
     ]
   },
   {
-    "hash": "chunk-1",
+    "hash": "chunk-2",
     "selectors":[
       "#id"
     ],
     "declarations":[
       {
         "type":"declaration",
-        "property":"IdSelector",
-        "value":"IdSelector"
+        "property":"IdSelector-chunk-2",
+        "value":"IdSelector-chunk-2"
       }
     ]
   },
   {
-    "hash": "chunk-1",
+    "hash": "chunk-2",
     "selectors":[
       "tag"
     ],
     "declarations":[
       {
         "type":"declaration",
-        "property":"TypeSelector",
-        "value":"TypeSelector"
+        "property":"TypeSelector-chunk-2",
+        "value":"TypeSelector-chunk-2"
       }
     ]
   },
   {
-    "hash": "chunk-1",
+    "hash": "chunk-2",
     "selectors":[
       ".class"
     ],
     "declarations":[
       {
         "type":"declaration",
-        "property":"ClassSelector",
-        "value":"ClassSelector"
+        "property":"ClassSelector-chunk-2",
+        "value":"ClassSelector-chunk-2"
       }
     ]
   },
   {
-    "hash": "chunk-1",
+    "hash": "chunk-2",
     "selectors":[
       "#id:hover"
     ],
     "declarations":[
       {
         "type":"declaration",
-        "property":"PseudoClassSelector",
-        "value":"PseudoClassSelector"
+        "property":"PseudoClassSelector-chunk-2",
+        "value":"PseudoClassSelector-chunk-2"
       }
     ]
   },
   {
-    "hash": "chunk-1",
+    "hash": "chunk-2",
     "selectors":[
       "#id[attr=\"test\"]"
     ],
     "declarations":[
       {
         "type":"declaration",
-        "property":"AttributeSelector",
-        "value":"AttributeSelector"
+        "property":"AttributeSelector-chunk-2",
+        "value":"AttributeSelector-chunk-2"
       }
     ]
   },
   {
-    "hash": "chunk-1",
+    "hash": "chunk-2",
     "selectors":[
       "#id",
       "*"
@@ -91,18 +91,18 @@
     "declarations":[
       {
         "type":"declaration",
-        "property":"IdSelector",
-        "value":"IdSelector"
+        "property":"IdSelector-chunk-2",
+        "value":"IdSelector-chunk-2"
       },
       {
         "type":"declaration",
-        "property":"UniversalSelector",
-        "value":"UniversalSelector"
+        "property":"UniversalSelector-chunk-2",
+        "value":"UniversalSelector-chunk-2"
       }
     ]
   },
   {
-    "hash": "chunk-1",
+    "hash": "chunk-2",
     "selectors":[
       ".class",
       "*"
@@ -110,13 +110,13 @@
     "declarations":[
       {
         "type":"declaration",
-        "property":"ClassSelector",
-        "value":"ClassSelector"
+        "property":"ClassSelector-chunk-2",
+        "value":"ClassSelector-chunk-2"
       },
       {
         "type":"declaration",
-        "property":"UniversalSelector",
-        "value":"UniversalSelector"
+        "property":"UniversalSelector-chunk-2",
+        "value":"UniversalSelector-chunk-2"
       }
     ]
   }

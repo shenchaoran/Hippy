@@ -65,12 +65,16 @@ class SelectorsMap {
   }
 
   append(appendRules) {
-    this.ruleSets.concat(appendRules);
+    this.ruleSets = this.ruleSets.concat(appendRules);
     appendRules.forEach(rule => rule.lookupSort(this));
   }
 
   delete(hash) {
-    const removedRuleSets = this.ruleSets.filter(rule => rule.hash === hash);
+    const removedRuleSets = [];
+    this.ruleSets = this.ruleSets.filter((rule) => {
+      if (rule.hash !== hash) return true;
+      removedRuleSets.push(rule);
+    });
     removedRuleSets.forEach(rule => rule.removeSort(this));
   }
 
