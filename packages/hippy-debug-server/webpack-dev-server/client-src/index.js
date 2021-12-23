@@ -22,6 +22,7 @@ const options = {
   overlay: false,
 };
 const parsedResourceQuery = parseURL(__resourceQuery);
+log.info('HMR', parsedResourceQuery);
 
 if (parsedResourceQuery.hot === 'true') {
   options.hot = true;

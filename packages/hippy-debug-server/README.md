@@ -4,6 +4,11 @@
 
 The package provide the debug server communicated with native(Android apk or iOS Simulator) and the local web development.
 
+# Introduction
+Some of source code is fork from other project. we modify the client implemention so the injected js could run on Hippy.
+- The webpack-dev-server folder if fork from [webpack-dev-server](https://github.com/webpack/webpack-dev-server). We modify all platform related implemention to support Hippy, such like `window`, `localtion`, etc. 
+- webpack-dev-server/client-src/hot is fork from [webpack](https://github.com/webpack/webpack/tree/main/hot). We change the fallback strategy to [live-reload](./webpack-dev-server/hot/../client-src/utils/apply-reload.js) of Hippy.
+
 ## Usage
 
 `@hippy/debug-server` can be install globally, but install to local in most case.

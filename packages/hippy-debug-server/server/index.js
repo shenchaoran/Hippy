@@ -28,8 +28,6 @@ const {
   parseMimeType,
 } = require('../utils');
 const devSupportWsServer = require('./websocketProxy');
-const liveReloadWsServer = require('./hippy-livereload');
-const { startWebpackDevServer } = require('./webpack');
 
 async function startDevServer(args) {
   const {
@@ -37,16 +35,8 @@ async function startDevServer(args) {
     entry = 'dist/dev/index.bundle',
     host = '127.0.0.1',
     port = 38989,
-    livePort = 38999,
     verbose,
-    config,
   } = args;
-  let { live } = args;
-  const { webpackConfig, hmrPort } = getWebpackConfig(config);
-  if (webpackConfig) {
-    live = false;
-    logger.warn('HMR and live option could not enable simultaneously, the live option is ignored!\nHMR will use live reload as a fallback strategy when failed.');
-  }
   const versionReturn = '{"Browser": "Hippy/v1.0.0","Protocol-Version": "1.1"}';
   const jsonReturn = JSON.stringify([{
     description: 'hippy instance',
@@ -60,7 +50,6 @@ async function startDevServer(args) {
   }]);
   const app = new Koa();
   let staticPath;
-  const watchPath = path.resolve(path.dirname(entry));
   if (static) {
     staticPath = path.resolve(static);
   } else {
@@ -103,48 +92,23 @@ async function startDevServer(args) {
     ctx.res.write(contentStr);
     return ctx.res.end();
   });
-  exec('adb', ['reverse', '--remove-all'])
-    .then(() => {
-      exec('adb', ['reverse', `tcp:${port}`, `tcp:${port}`]);
-      exec('adb', ['reverse', `tcp:${livePort}`, `tcp:${livePort}`]);
-      if (hmrPort) exec('adb', ['reverse', `tcp:${hmrPort}`, `tcp:${hmrPort}`]);
-    })
-    .catch((err) => {
-      logger.warn('Port reverse failed, For iOS app debug only just ignore the message.');
-      logger.warn('Otherwise please check adb devices command working correctly');
-      if (verbose) {
-        logger.error(err);
-      }
-    })
-    .finally(() => {
-      const serverDebugInstance = app.listen(port, host, () => {
-        devSupportWsServer.startWebsocketProxyServer(serverDebugInstance, '/debugger-proxy');
-        logger.info('Hippy debug server is started at', `${host}:${port}`, 'for entry', entry);
-        logger.info('HMR server is started at', `${host}:${hmrPort}`);
-        logger.info('Please open "chrome://inspect" in Chrome to debug your android Hippy app, or use Safari to debug iOS app');
 
-        if (webpackConfig) startWebpackDevServer(webpackConfig);
-      });
-
-      serverDebugInstance.timeout = 6000 * 1000;
-      if (!live) return;
-      const serverLiveReloadInstance = app.listen(livePort, host, () => {
-        liveReloadWsServer.startLiveReloadServer(serverLiveReloadInstance, '/debugger-live-reload', watchPath);
-        logger.info('Hippy live reload server is started at', `${host}:${livePort}`, 'to watch directory', watchPath);
-      });
-      serverLiveReloadInstance.timeout = 6000 * 1000;
-    });
-}
-
-function getWebpackConfig(configPath) {
-  let hmrPort;
-  let webpackConfig;
-  const webpackConfigPath = path.resolve(process.cwd(), configPath);
-  if (configPath && fs.existsSync(webpackConfigPath)) {
-    webpackConfig = require(webpackConfigPath);
-    hmrPort = (webpackConfig.devServer && webpackConfig.devServer.port) || 38988;
+  try {
+    const reversePort = `tcp:${port}`;
+    await exec('adb', ['reverse', '--remove', reversePort]);
+    await exec('adb', ['reverse', reversePort, reversePort]);
+  } catch (e) {
+    logger.warn('Port reverse failed, For iOS app debug only just ignore the message.');
+    logger.warn('Otherwise please check adb devices command working correctly');
+    if (verbose) {
+      logger.error(e);
+    }
   }
-  return { webpackConfig, hmrPort };
+  const serverDebugInstance = app.listen(port, host, () => {
+    devSupportWsServer.startWebsocketProxyServer(serverDebugInstance, '/debugger-proxy');
+    logger.info('Hippy debug server is started at', `${host}:${port}`, 'for entry', entry);
+    logger.info('Please open "chrome://inspect" in Chrome to debug your android Hippy app, or use Safari to debug iOS app');
+  });
 }
 
 module.exports = startDevServer;

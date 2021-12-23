@@ -29,11 +29,6 @@ const { argv } = yargs
     default: '38989',
     describe: 'The port for debug server will listen to',
   })
-  .option('livePort', {
-    type: 'string',
-    default: '38999',
-    describe: 'The port for live debug server will listen to',
-  })
   .option('verbose', {
     type: 'boolean',
     default: false,

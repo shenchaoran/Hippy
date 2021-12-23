@@ -1616,10 +1616,12 @@ class Server {
       this.logger.info('HMR ws client is connected.');
 
       if (this.options.hot === true || this.options.hot === 'only') {
+        this.logger.info('enable HMR');
         this.sendMessage([client], 'hot');
       }
 
       if (this.options.liveReload) {
+        this.logger.info('enable live reload');
         this.sendMessage([client], 'liveReload');
       }
 

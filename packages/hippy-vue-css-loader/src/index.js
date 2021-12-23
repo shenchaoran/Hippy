@@ -32,15 +32,14 @@ let sourceId = 0;
 function hippyVueCSSLoader(source) {
   const options = getOptions(this);
   const parsed = parseCSS(source, { source: sourceId });
-  const identifier = this._module.identifier();
 
   const majorNodeVersion = parseInt(process.versions.node.split('.')[0], 10);
   const hashType = majorNodeVersion >= 17 ? 'md5' : 'md4';
   const hash = crypto.createHash(hashType);
-  const moduleHash = hash.update(identifier).digest('hex');
+  const contentHash = hash.update(source).digest('hex');
   sourceId += 1;
   const rulesAst = parsed.stylesheet.rules.filter(n => n.type === 'rule').map(n => ({
-    hash: moduleHash,
+    hash: contentHash,
     selectors: n.selectors,
     declarations: n.declarations.map((dec) => {
       let { value } = dec;
@@ -67,7 +66,7 @@ function hippyVueCSSLoader(source) {
         if(!global['${GLOBAL_DISPOSE_STYLE_NAME}']) {
           global['${GLOBAL_DISPOSE_STYLE_NAME}'] = [];
         }
-        global['${GLOBAL_DISPOSE_STYLE_NAME}'] = global['${GLOBAL_DISPOSE_STYLE_NAME}'].concat('${moduleHash}');
+        global['${GLOBAL_DISPOSE_STYLE_NAME}'] = global['${GLOBAL_DISPOSE_STYLE_NAME}'].concat('${contentHash}');
       })
     }
   })()`;

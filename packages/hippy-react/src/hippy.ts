@@ -126,7 +126,7 @@ class HippyReact implements HippyReact {
     const { __instanceId__: rootViewId } = superProps;
     trace(...componentName, 'Start', appName, 'with rootViewId', rootViewId, superProps);
 
-    if (process.env.NODE_ENV !== 'production') {
+    if (process.env.NODE_ENV === 'development') {
       injectIntoDevTools({
         bundleType: 1,
         version: HippyReact.version,

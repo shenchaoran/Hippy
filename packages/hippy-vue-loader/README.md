@@ -2,6 +2,8 @@
 
 This is a fork of [vue-loader@15.9.8](https://github.com/vuejs/vue-loader/tree/master) for support hippy css HMR.
 
+Add [style hot reload hook](./lib/codegen/hotReload.js) and [repaint API](./lib/vue-hot-reload-api/index.js) to repaint component when HMR.
+
 
 
 # How to use
@@ -22,13 +24,14 @@ module.exports = {
   output: {
     filename: 'index.bundle',
     path: path.resolve('./dist/dev/'),
-    // you must set publicPath to load hmr chunk
-    publicPath: 'http://localhost:38989/',
     globalObject: '(0, eval)("this")',
   },
   plugins: [
     new VueLoaderPlugin(),
-    new HippyHMRPlugin(),
+    new HippyHMRPlugin({
+      // HMR [hash].hot-update.json will fetch from this path
+      hotManifestPublicPath: 'http://<your_ip_or_localhost_with_proxy>:38989/',
+    }),
     // other plugin here
   ],
   module: {

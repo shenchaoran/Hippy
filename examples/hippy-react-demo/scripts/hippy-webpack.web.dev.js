@@ -3,13 +3,19 @@ const path = require('path');
 const webpack = require('webpack');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 const CaseSensitivePathsPlugin = require('case-sensitive-paths-webpack-plugin');
+const ReactRefreshWebpackPlugin = require('@hippy/hippy-react-refresh-webpack-plugin');
 const pkg = require('../package.json');
 
 const platform = 'web';
 
 module.exports = {
-  mode: 'production',
+  mode: 'development',
   bail: true,
+  devServer: {
+    port: 38988,
+    hot: true,
+    liveReload: true,
+  },
   entry: {
     index: ['regenerator-runtime', path.resolve(pkg.main)],
   },
@@ -20,7 +26,7 @@ module.exports = {
   plugins: [
     new webpack.NamedModulesPlugin(),
     new webpack.DefinePlugin({
-      'process.env.NODE_ENV': JSON.stringify('production'),
+      'process.env.NODE_ENV': JSON.stringify('development'),
       __PLATFORM__: JSON.stringify(platform),
     }),
     new HtmlWebpackPlugin({
@@ -30,6 +36,7 @@ module.exports = {
       favouriteIcon: pkg.favicon || 'https://res.imtt.qq.com/hippydoc/img/hippy-logo.ico',
     }),
     new CaseSensitivePathsPlugin(),
+    new ReactRefreshWebpackPlugin(),
   ],
   module: {
     rules: [
@@ -56,6 +63,7 @@ module.exports = {
                 ['@babel/plugin-proposal-class-properties'],
                 ['@babel/plugin-proposal-decorators', { legacy: true }],
                 ['@babel/plugin-transform-runtime', { regenerator: true }],
+                require.resolve('react-refresh/babel'),
               ],
             },
           },

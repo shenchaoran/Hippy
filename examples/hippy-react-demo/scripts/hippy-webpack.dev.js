@@ -15,7 +15,10 @@ module.exports = {
   },
   devServer: {
     port: 38988,
+    // by default hot and liveReload option are true, you could set only liveReload to true
+    // to use live reload
     hot: true,
+    liveReload: true,
     devMiddleware: {
       writeToDisk: true,
     },
@@ -24,7 +27,7 @@ module.exports = {
     },
   },
   entry: {
-    index: ['regenerator-runtime', path.resolve(pkg.main), '@hippy/hippy-live-reload-polyfill'],
+    index: ['regenerator-runtime', path.resolve(pkg.main)],
   },
   output: {
     filename: 'index.bundle',
@@ -49,8 +52,8 @@ module.exports = {
     //   test: /\.(js|jsbundle|css|bundle)($|\?)/i,
     //   filename: '[file].map',
     // }),
-    // HMR manifest.json will fetch from this path
     new HippyHMRPlugin({
+      // HMR [hash].hot-update.json will fetch from this path
       hotManifestPublicPath: 'http://localhost:38989/',
     }),
     new ReactRefreshWebpackPlugin({
@@ -65,7 +68,6 @@ module.exports = {
           {
             loader: 'babel-loader',
             options: {
-              compact: false,
               sourceType: 'unambiguous',
               presets: [
                 '@babel/preset-react',
