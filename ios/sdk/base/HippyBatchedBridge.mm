@@ -479,23 +479,23 @@ HIPPY_NOT_IMPLEMENTED(-(instancetype)initWithDelegate
 }
 
 - (void)setUpDevClientWithName:(NSString *)name {
-    if ([self.delegate respondsToSelector:@selector(shouldStartInspector:)]) {
-        if ([self.delegate shouldStartInspector:self.parentBridge]) {
+//    if ([self.delegate respondsToSelector:@selector(shouldStartInspector:)]) {
+//        if ([self.delegate shouldStartInspector:self.parentBridge]) {
             NSString *ipAddress = nil;
             NSString *ipPort = nil;
-            if ([self.delegate respondsToSelector:@selector(inspectorSourceURLForBridge:)]) {
-                NSURL *url = [self.delegate inspectorSourceURLForBridge:self.parentBridge];
-                ipAddress = [url host];
-                ipPort = [NSString stringWithFormat:@"%@", [url port]];
-            }
-            else {
+//            if ([self.delegate respondsToSelector:@selector(inspectorSourceURLForBridge:)]) {
+//                NSURL *url = [self.delegate inspectorSourceURLForBridge:self.parentBridge];
+//                ipAddress = [url host];
+//                ipPort = [NSString stringWithFormat:@"%@", [url port]];
+//            }
+//            else {
                 HippyBundleURLProvider *bundleURLProvider = [HippyBundleURLProvider sharedInstance];
                 ipAddress = bundleURLProvider.localhostIP;
                 ipPort = bundleURLProvider.localhostPort;
-            }
+//            }
             _devManager = [[HippyDevManager alloc] initWithBridge:self.parentBridge devIPAddress:ipAddress devPort:ipPort contextName:name];
-        }
-    }
+//        }
+//    }
 }
 
 - (void)registerModuleForFrameUpdates:(id<HippyBridgeModule>)module withModuleData:(HippyModuleData *)moduleData {
