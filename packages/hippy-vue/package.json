@@ -1,6 +1,6 @@
 {
-  "name": "@hippy/vue",
-  "version": "unspecified",
+  "name": "@tencent/hippy-vue-alpha",
+  "version": "2.16.0",
   "description": "Vue binding for Hippy native framework",
   "author": "OpenHippy Team",
   "license": "Apache-2.0",
