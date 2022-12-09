@@ -19,12 +19,12 @@
  */
 
 // Most nodes test is executed in node-ops.test.js
-// here just test the lacked testing for ViewNode for coverage.
+// here just test the lacked testing for HippyNode for coverage.
 
 import test, { before } from 'ava';
-import ViewNode from '../view-node';
-import ElementNode from '../element-node';
-import * as util from '../../util';
+import { isFunction } from '@vue/shared';
+import { HippyNode, NodeType } from '../../../src/runtime/node/hippy-node';
+import { HippyElement } from '../../../src/runtime/element/hippy-element';
 
 before(() => {
   global.__GLOBAL__ = {
@@ -43,35 +43,35 @@ const logWhenFail = async (t, cb, err) => {
   tryTest.commit();
 };
 
-test('ElementNode API', async (t) => {
+test('HippyElement API', async (t) => {
   await logWhenFail(t, (t) => {
-    const node = new ElementNode('div');
+    const node = new HippyElement('div');
 
-    t.true(util.isFunction(node.appendChild));
-    t.true(util.isFunction(node.insertBefore));
-    t.true(util.isFunction(node.moveChild));
-    t.true(util.isFunction(node.removeChild));
+    t.true(isFunction(node.appendChild));
+    t.true(isFunction(node.insertBefore));
+    t.true(isFunction(node.moveChild));
+    t.true(isFunction(node.removeChild));
 
     t.true(node.classList instanceof Set);
     t.true(node.style instanceof Object);
     t.true(node.attributes instanceof Object);
-  }, 'ElementNode APIs have breaking changes, please update const variable \'BEFORE_RENDER_TO_NATIVE_HOOK_VERSION\' to disable this hook');
+  }, 'HippyElement APIs have breaking changes, please update const variable \'BEFORE_RENDER_TO_NATIVE_HOOK_VERSION\' to disable this hook');
 });
 
-test('ViewNode API', async (t) => {
+test('HippyNode API', async (t) => {
   await logWhenFail(t, (t) => {
-    const node = new ViewNode();
+    const node = new HippyNode(NodeType.ElementNode);
 
-    t.true(util.isFunction(node.appendChild));
-    t.true(util.isFunction(node.insertBefore));
-    t.true(util.isFunction(node.moveChild));
-    t.true(util.isFunction(node.removeChild));
+    t.true(isFunction(node.appendChild));
+    t.true(isFunction(node.insertBefore));
+    t.true(isFunction(node.moveChild));
+    t.true(isFunction(node.removeChild));
 
-    const childNode1 = new ViewNode();
-    const childNode2 = new ViewNode();
+    const childNode1 = new HippyNode(NodeType.ElementNode);
+    const childNode2 = new HippyNode(NodeType.ElementNode);
     node.appendChild(childNode1);
     node.appendChild(childNode2);
     t.true(node.firstChild === childNode1);
     t.true(node.lastChild === childNode2);
-  }, 'ViewNode APIs have breaking changes, please update const variable \'BEFORE_RENDER_TO_NATIVE_HOOK_VERSION\' to disable this hook');
+  }, 'HippyNode APIs have breaking changes, please update const variable \'BEFORE_RENDER_TO_NATIVE_HOOK_VERSION\' to disable this hook');
 });
